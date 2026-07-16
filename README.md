@@ -90,6 +90,13 @@ $env:PYTHONPATH="src"
   --data-root data `
   --img-size 128 `
   --output outputs\augmentation_grid.png
+
+.\.venv\Scripts\python.exe scripts\train_cnn_augmented.py `
+  --data-root data `
+  --img-size 128 `
+  --batch-size 32 `
+  --epochs 20 `
+  --dropout 0.4
 ```
 
 ## Phases de developpement

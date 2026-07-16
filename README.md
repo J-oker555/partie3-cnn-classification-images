@@ -55,6 +55,24 @@ data/
 
 Par defaut, les exemples utilisent `cat` vs `dog`, mais les constantes `CLASS_A` et `CLASS_B` permettent de changer de sujet.
 
+Preparation locale a partir de deux dossiers bruts :
+
+```powershell
+$env:PYTHONPATH="src"
+.\.venv\Scripts\python.exe scripts\prepare_binary_dataset.py `
+  --raw-class-a raw\cat `
+  --raw-class-b raw\dog `
+  --class-a cat `
+  --class-b dog `
+  --output-root data
+
+.\.venv\Scripts\python.exe scripts\inspect_binary_dataset.py `
+  --data-root data `
+  --class-a cat `
+  --class-b dog `
+  --output outputs\sample_grid.png
+```
+
 ## Phases de developpement
 
 Les phases a traiter sont documentees dans [docs/issues.md](docs/issues.md). Chaque phase doit produire un commit clair, sans `git add .`, avec staging explicite.

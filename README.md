@@ -76,6 +76,9 @@ $env:PYTHONPATH="src"
   --data-root data `
   --img-size 128 `
   --batch-size 32
+
+.\.venv\Scripts\python.exe scripts\check_cnn_scratch_architecture.py `
+  --img-size 128
 ```
 
 ## Phases de developpement

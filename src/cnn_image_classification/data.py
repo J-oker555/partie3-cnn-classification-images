@@ -60,6 +60,18 @@ def make_dataset(
     )
 
 
+def make_binary_datasets(
+    data_root: str | Path,
+    image_size: tuple[int, int],
+    batch_size: int,
+    seed: int = 42,
+) -> tuple[tf.data.Dataset, tf.data.Dataset]:
+    data_root = Path(data_root)
+    train_ds = make_dataset(data_root / "train", image_size, batch_size, shuffle=True, seed=seed)
+    val_ds = make_dataset(data_root / "val", image_size, batch_size, shuffle=False, seed=seed)
+    return train_ds, val_ds
+
+
 def normalize_dataset(ds: tf.data.Dataset) -> tf.data.Dataset:
     normalization_layer = tf.keras.layers.Rescaling(1.0 / 255)
     return ds.map(lambda images, labels: (normalization_layer(images), labels))
@@ -69,6 +81,30 @@ def optimize_dataset(ds: tf.data.Dataset) -> tf.data.Dataset:
     return ds.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
 
 
+def make_normalized_binary_datasets(
+    data_root: str | Path,
+    image_size: tuple[int, int],
+    batch_size: int,
+    seed: int = 42,
+) -> tuple[tf.data.Dataset, tf.data.Dataset]:
+    train_ds, val_ds = make_binary_datasets(data_root, image_size, batch_size, seed)
+    train_ds = optimize_dataset(normalize_dataset(train_ds))
+    val_ds = optimize_dataset(normalize_dataset(val_ds))
+    return train_ds, val_ds
+
+
 def preprocess_mobilenet_dataset(ds: tf.data.Dataset) -> tf.data.Dataset:
     preprocess_input = tf.keras.applications.mobilenet_v2.preprocess_input
     return ds.map(lambda images, labels: (preprocess_input(images), labels)).prefetch(tf.data.AUTOTUNE)
+
+
+def describe_first_batch(ds: tf.data.Dataset) -> dict[str, object]:
+    images, labels = next(iter(ds))
+    return {
+        "images_shape": tuple(images.shape),
+        "labels_shape": tuple(labels.shape),
+        "images_min": float(tf.reduce_min(images).numpy()),
+        "images_max": float(tf.reduce_max(images).numpy()),
+        "labels_min": float(tf.reduce_min(labels).numpy()),
+        "labels_max": float(tf.reduce_max(labels).numpy()),
+    }

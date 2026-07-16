@@ -71,6 +71,11 @@ $env:PYTHONPATH="src"
   --class-a cat `
   --class-b dog `
   --output outputs\sample_grid.png
+
+.\.venv\Scripts\python.exe scripts\check_dataset_pipeline.py `
+  --data-root data `
+  --img-size 128 `
+  --batch-size 32
 ```
 
 ## Phases de developpement

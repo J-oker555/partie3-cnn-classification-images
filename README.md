@@ -85,6 +85,11 @@ $env:PYTHONPATH="src"
   --img-size 128 `
   --batch-size 32 `
   --epochs 20
+
+.\.venv\Scripts\python.exe scripts\preview_data_augmentation.py `
+  --data-root data `
+  --img-size 128 `
+  --output outputs\augmentation_grid.png
 ```
 
 ## Phases de developpement

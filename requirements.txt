@@ -1,0 +1,6 @@
+tensorflow>=2.16
+numpy>=1.26
+matplotlib>=3.8
+pandas>=2.2
+kaggle>=1.6
+pypdf>=6.14

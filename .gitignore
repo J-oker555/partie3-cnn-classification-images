@@ -1,0 +1,30 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Donnees et artefacts ML lourds
+data/
+logs/
+models/
+outputs/
+exports/
+*.keras
+*.tflite
+*.h5
+*.zip
+
+# Secrets locaux
+.env
+kaggle.json
+
+# Notebooks
+.ipynb_checkpoints/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

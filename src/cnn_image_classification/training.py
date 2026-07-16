@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import datetime as dt
 from pathlib import Path
+import time
 
 import tensorflow as tf
 
@@ -30,3 +31,36 @@ def early_stopping_accuracy() -> tf.keras.callbacks.EarlyStopping:
         patience=5,
         restore_best_weights=True,
     )
+
+
+def fit_with_timing(
+    model: tf.keras.Model,
+    train_ds: tf.data.Dataset,
+    val_ds: tf.data.Dataset,
+    epochs: int,
+    callbacks: list[tf.keras.callbacks.Callback] | None = None,
+) -> tuple[tf.keras.callbacks.History, float]:
+    start = time.time()
+    history = model.fit(
+        train_ds,
+        epochs=epochs,
+        validation_data=val_ds,
+        callbacks=callbacks or [],
+    )
+    return history, time.time() - start
+
+
+def best_val_accuracy(history: tf.keras.callbacks.History) -> float:
+    return max(history.history.get("val_accuracy", [0.0]))
+
+
+def first_val_loss_divergence_epoch(history: tf.keras.callbacks.History) -> int | None:
+    val_loss = history.history.get("val_loss", [])
+    if len(val_loss) < 2:
+        return None
+    best_so_far = val_loss[0]
+    for index, value in enumerate(val_loss[1:], start=2):
+        if value > best_so_far:
+            return index
+        best_so_far = min(best_so_far, value)
+    return None

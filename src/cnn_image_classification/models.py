@@ -4,6 +4,34 @@ import tensorflow as tf
 from tensorflow.keras import layers, models
 
 
+def scratch_shape_plan(image_size: tuple[int, int]) -> list[tuple[str, tuple[int, ...]]]:
+    height, width = image_size
+    plan: list[tuple[str, tuple[int, ...]]] = [
+        ("input", (height, width, 3)),
+        ("conv2d_32_same", (height, width, 32)),
+    ]
+    height //= 2
+    width //= 2
+    plan.append(("maxpool_1", (height, width, 32)))
+    plan.append(("conv2d_64_same", (height, width, 64)))
+    height //= 2
+    width //= 2
+    plan.append(("maxpool_2", (height, width, 64)))
+    plan.append(("conv2d_128_same", (height, width, 128)))
+    height //= 2
+    width //= 2
+    plan.append(("maxpool_3", (height, width, 128)))
+    plan.append(("flatten", (height * width * 128,)))
+    plan.append(("dense_128", (128,)))
+    plan.append(("dense_1_sigmoid", (1,)))
+    return plan
+
+
+def scratch_dense_params(image_size: tuple[int, int], dense_units: int = 128) -> int:
+    flatten_units = scratch_shape_plan(image_size)[-3][1][0]
+    return flatten_units * dense_units + dense_units
+
+
 def build_cnn_scratch(input_shape: tuple[int, int, int]) -> tf.keras.Model:
     return models.Sequential(
         [

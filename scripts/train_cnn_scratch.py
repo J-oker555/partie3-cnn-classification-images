@@ -12,6 +12,7 @@ from cnn_image_classification.training import (
     early_stopping_loss,
     first_val_loss_divergence_epoch,
     fit_with_timing,
+    save_run_summary,
     tensorboard_callback,
 )
 
@@ -65,6 +66,12 @@ def main() -> None:
     args.models_dir.mkdir(parents=True, exist_ok=True)
     plot_history(history, "CNN scratch", args.outputs_dir / "curves_cnn_scratch.png")
     model.save(args.models_dir / "model_scratch.keras")
+    save_run_summary(
+        args.outputs_dir / "history_scratch.json",
+        history=history,
+        training_time=training_time,
+        params=model.count_params(),
+    )
 
     divergence_epoch = first_val_loss_divergence_epoch(history)
     print(f"Temps d'entrainement : {training_time:.0f}s")

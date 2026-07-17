@@ -97,6 +97,11 @@ $env:PYTHONPATH="src"
   --batch-size 32 `
   --epochs 20 `
   --dropout 0.4
+
+.\.venv\Scripts\python.exe scripts\compare_tp1_tp2.py `
+  --scratch outputs\history_scratch.json `
+  --augmented outputs\history_augmented.json `
+  --output outputs\comparison_tp1_tp2.png
 ```
 
 ## Phases de developpement

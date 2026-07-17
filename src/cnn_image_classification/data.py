@@ -98,6 +98,16 @@ def preprocess_mobilenet_dataset(ds: tf.data.Dataset) -> tf.data.Dataset:
     return ds.map(lambda images, labels: (preprocess_input(images), labels)).prefetch(tf.data.AUTOTUNE)
 
 
+def make_mobilenet_binary_datasets(
+    data_root: str | Path,
+    image_size: tuple[int, int] = (160, 160),
+    batch_size: int = 32,
+    seed: int = 42,
+) -> tuple[tf.data.Dataset, tf.data.Dataset]:
+    train_ds, val_ds = make_binary_datasets(data_root, image_size, batch_size, seed)
+    return preprocess_mobilenet_dataset(train_ds), preprocess_mobilenet_dataset(val_ds)
+
+
 def describe_first_batch(ds: tf.data.Dataset) -> dict[str, object]:
     images, labels = next(iter(ds))
     return {

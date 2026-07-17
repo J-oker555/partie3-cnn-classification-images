@@ -102,6 +102,9 @@ $env:PYTHONPATH="src"
   --scratch outputs\history_scratch.json `
   --augmented outputs\history_augmented.json `
   --output outputs\comparison_tp1_tp2.png
+
+.\.venv\Scripts\python.exe scripts\check_mobilenet_freezing.py `
+  --weights imagenet
 ```
 
 ## Phases de developpement

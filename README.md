@@ -105,6 +105,12 @@ $env:PYTHONPATH="src"
 
 .\.venv\Scripts\python.exe scripts\check_mobilenet_freezing.py `
   --weights imagenet
+
+.\.venv\Scripts\python.exe scripts\train_mobilenet_head.py `
+  --data-root data `
+  --batch-size 32 `
+  --epochs 10 `
+  --weights imagenet
 ```
 
 ## Phases de developpement

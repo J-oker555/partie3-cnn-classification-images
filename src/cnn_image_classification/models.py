@@ -88,11 +88,14 @@ def build_cnn_augmented(
     )
 
 
-def build_mobilenetv2_classifier(input_shape: tuple[int, int, int] = (160, 160, 3)) -> tuple[tf.keras.Model, tf.keras.Model]:
+def build_mobilenetv2_classifier(
+    input_shape: tuple[int, int, int] = (160, 160, 3),
+    weights: str | None = "imagenet",
+) -> tuple[tf.keras.Model, tf.keras.Model]:
     base_model = tf.keras.applications.MobileNetV2(
         input_shape=input_shape,
         include_top=False,
-        weights="imagenet",
+        weights=weights,
     )
     base_model.trainable = False
 
@@ -104,6 +107,10 @@ def build_mobilenetv2_classifier(input_shape: tuple[int, int, int] = (160, 160, 
     outputs = layers.Dense(1, activation="sigmoid")(x)
     model = tf.keras.Model(inputs, outputs, name="mobilenetv2_transfer")
     return model, base_model
+
+
+def count_trainable_params(model: tf.keras.Model) -> int:
+    return sum(int(tf.keras.ops.size(variable)) for variable in model.trainable_variables)
 
 
 def freeze_first_layers(base_model: tf.keras.Model, ratio: float = 0.8) -> int:

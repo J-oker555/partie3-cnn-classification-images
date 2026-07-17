@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import json
 from pathlib import Path
 import time
 
@@ -64,3 +65,26 @@ def first_val_loss_divergence_epoch(history: tf.keras.callbacks.History) -> int 
             return index
         best_so_far = min(best_so_far, value)
     return None
+
+
+def save_run_summary(
+    path: str | Path,
+    history: tf.keras.callbacks.History,
+    training_time: float,
+    params: int,
+) -> Path:
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "history": {key: [float(v) for v in values] for key, values in history.history.items()},
+        "training_time": float(training_time),
+        "params": int(params),
+        "best_val_accuracy": float(best_val_accuracy(history)),
+        "divergence_epoch": first_val_loss_divergence_epoch(history),
+    }
+    path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    return path
+
+
+def load_run_summary(path: str | Path) -> dict[str, object]:
+    return json.loads(Path(path).read_text(encoding="utf-8"))
